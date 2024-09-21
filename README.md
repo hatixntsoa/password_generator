@@ -58,6 +58,18 @@
 
 ## Installation
 
+### Option 1: Install from PyPI
+
+To install `pypass-tool` directly from PyPI:
+
+```bash
+pip install pypass-tool
+```
+
+### Option 2: For the Nerds Who Want to Build It on Their Own
+
+You can also clone the repository and build the package yourself.
+
 1. Clone the repository and navigate to the project directory:
 
   ```bash
