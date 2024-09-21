@@ -20,42 +20,6 @@
 - **Desktop GUI**: Simple graphical interface using Tkinter for generating passwords on your desktop.
 - **Web Interface**: Web-based interface built with Flask for managing passwords through a browser.
 
-## Project Structure
-
-```
-.
-├── imgs
-│   └── pypass.png
-│
-├── LICENSE.md
-├── pypass
-│   ├── app
-│   │   ├── cli
-│   │   │   ├── __init__.py
-│   │   │   └── pypass_cli.py
-│   │   ├── gui
-│   │   │   ├── desktop
-│   │   │   │   ├── __init__.py
-│   │   │   │   └── pypass_gui.py
-│   │   │   ├── __init__.py
-│   │   │   └── web
-│   │   │       ├── content.py
-│   │   │       ├── __init__.py
-│   │   │       └── pypass_web.py
-│   │   ├── __init__.py
-│   │   ├── main.py
-│   │   ├── database
-│   │   │   ├── connect.py
-│   │   │   └── __init__.py
-│   │   ├── passwords
-│   │   │   ├── passwords.db
-│   │   │   └── passwords.md
-│   └── __init__.py
-├── README.md
-├── requirements.txt
-└── setup.py
-```
-
 ## Installation
 
 ### Option 1: Install from PyPI
