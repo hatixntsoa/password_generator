@@ -25,8 +25,8 @@
 ```
 .
 ├── imgs
-│   ├── pypass.png
-│   └── pypass.svg
+│   └── pypass.png
+│
 ├── LICENSE.md
 ├── pypass
 │   ├── app
