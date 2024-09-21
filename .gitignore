@@ -1,0 +1,11 @@
+# Ignore python caches
+**/__pycache__/
+
+# Ignore build, dist, egg info
+**/build/
+**/dist/
+**/*.egg-info
+
+# Ignore generated passwords
+**/passwords/passwords.md
+**/passwords/passwords.db
