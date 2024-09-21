@@ -1,22 +1,28 @@
-from flask import Flask, render_template_string, request, redirect, url_for
-from .content import html_content
+from flask import Flask, render_template_string, request, jsonify
+from .content import passgen_content
+import secrets
+import string
 
 app = Flask(__name__)
 
-@app.route('/', methods=['GET', 'POST'])
+def generate_password(length=12, exclude=None):
+    alphabet = string.ascii_letters + string.digits + string.punctuation
+    if exclude:
+        exclude_set = set(exclude)
+        alphabet = ''.join(char for char in alphabet if char not in exclude_set)
+    password = ''.join(secrets.choice(alphabet) for _ in range(length))
+    return password
+
+@app.route('/', methods=['GET'])
 def home():
-    if request.method == 'POST':
-        # Handle form submission
-        username = request.form.get('username')
-        password = request.form.get('password')
-        # Process the data (e.g., save it, perform some logic)
-        return render_template_string(
-            '<h1>Username: {{ username }} ; Password: {{ password }} </h1>', 
-            username=username, password=password
-        )
-    
-    # Render the form if GET request
-    return render_template_string(html_content)
+    return render_template_string(passgen_content)
+
+@app.route('/generate', methods=['POST'])
+def generate():
+    length = int(request.form.get('length', 12))
+    exclude = request.form.get('exclude', '')
+    password = generate_password(length, exclude)
+    return jsonify({'password': password})
 
 def main():
     app.run()
