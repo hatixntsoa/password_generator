@@ -1,5 +1,5 @@
 from flask import Flask, render_template_string, request, jsonify
-from .content import passgen_content
+from .content import passgen_content, pass_content
 import secrets
 import string
 import webbrowser
@@ -17,7 +17,7 @@ def generate_password(length=12, exclude=None):
 
 @app.route('/', methods=['GET'])
 def home():
-    return render_template_string(passgen_content)
+    return render_template_string(pass_content)
 
 @app.route('/generate', methods=['POST'])
 def generate():
