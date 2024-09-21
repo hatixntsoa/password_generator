@@ -2,6 +2,8 @@ from flask import Flask, render_template_string, request, jsonify
 from .content import passgen_content
 import secrets
 import string
+import webbrowser
+from threading import Timer
 
 app = Flask(__name__)
 
@@ -24,7 +26,12 @@ def generate():
     password = generate_password(length, exclude)
     return jsonify({'password': password})
 
+def open_browser():
+    webbrowser.open_new('http://localhost:5000/')
+
 def main():
+    # Delay to allow server time to start
+    Timer(1, open_browser).start()
     app.run()
 
 if __name__ == "__main__":
