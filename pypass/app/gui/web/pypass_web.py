@@ -1,5 +1,5 @@
 from flask import Flask, render_template_string, request, redirect, url_for
-from pypass.app.gui.web.content import html_content
+from .content import html_content
 
 app = Flask(__name__)
 
