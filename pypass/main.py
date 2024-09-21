@@ -26,8 +26,11 @@ def main():
     # Define the base path for the passwords directory
     base_path = abspath(jn(dirname(__file__), 'passwords'))
     
-    # For package execution, also get the installation directory
-    package_base_path = pkg_resources.resource_filename('pypass', 'passwords')
+    # Fallback to standalone path if package path retrieval fails
+    try:
+        package_base_path = pkg_resources.resource_filename('pypass', 'passwords')
+    except Exception:
+        package_base_path = base_path
 
     # Define the path for password files
     passwords_md_path = jn(base_path, 'passwords.md')

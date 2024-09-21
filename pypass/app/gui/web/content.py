@@ -5,6 +5,7 @@ html_content = '''
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pypass Web</title>
+  <link rel="icon" href="https://raw.githubusercontent.com/h471x/password_generator/master/imgs/pypass.png">
 </head>
 <body>
   <h1>Welcome to Pypass Web</h1>
