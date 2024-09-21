@@ -90,7 +90,7 @@ Once the package is installed, you can use the `pypass` command with different i
 - **Desktop GUI Mode**:
   
   ```bash
-  pypass desktop
+  pypass gui
   ```
 
 - **Web Interface Mode**:
