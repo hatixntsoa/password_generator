@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pypass-tool',
-    version='0.2.1',
+    version='0.2.2',
     description='A CLI tool for password generation',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
@@ -29,6 +29,6 @@ setup(
 
     include_package_data=True,
     package_data={
-        'pypass': ['passwords/*'],
+        'pypass': ['passwords/infos.md'],
     },
 )
