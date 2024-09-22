@@ -1,49 +1,44 @@
-from sys import path
 from os.path import abspath as abs, join as jn, dirname as dir
-
-import pkg_resources
 import sqlite3
 
 def get_db_file(db_file):
-    if __name__ == "__main__":
-        return abs(jn(dir(__file__), '..', 'passwords', db_file))
-    else:
-        return pkg_resources.resource_filename(__name__, f'passwords/{db_file}')
+    return jn(dir(abs(__file__)), "..", "passwords", db_file)
 
-# Connect to the SQLite database
-conn = sqlite3.connect(get_db_file('passwords.db'))
+def connect_db():
+    conn = sqlite3.connect(get_db_file('passwords.db'))
+    return conn
 
-# Create a cursor object
-cursor = conn.cursor()
+def create_table():
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS passwords (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT,
+            creation_date TEXT,
+            owner TEXT,
+            description TEXT,
+            strength TEXT,
+            password TEXT
+        )
+    ''')
+    conn.commit()
+    conn.close()
 
-# Create a table (if it doesn't exist)
-cursor.execute('''
-CREATE TABLE IF NOT EXISTS users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name TEXT NOT NULL,
-    age INTEGER NOT NULL
-)
-''')
+def insert_password(name, creation_date, owner, description, strength, password):
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute('''
+        INSERT INTO passwords (name, creation_date, owner, description, strength, password)
+        VALUES (?, ?, ?, ?, ?, ?)
+    ''', (name, creation_date, owner, description, strength, password))
+    conn.commit()
+    conn.close()
 
-# Insert data into the table
-cursor.execute('''
-INSERT INTO users (name, age)
-VALUES (?, ?)
-''', ('Alice', 30))
-
-# Insert multiple rows
-users = [
-    ('Bob', 25),
-    ('Charlie', 35),
-    ('David', 40)
-]
-cursor.executemany('''
-INSERT INTO users (name, age)
-VALUES (?, ?)
-''', users)
-
-# Commit the transaction
-conn.commit()
-
-# Close the connection
-conn.close()
+def fetch_passwords():
+    conn = connect_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM passwords')
+    results = cursor.fetchall()
+    conn.close()
+    return results

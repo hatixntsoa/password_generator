@@ -11,10 +11,12 @@ if is_standalone:
     from app.cli.pypass_cli import main as cli_main
     from app.gui.web.pypass_web import main as web_main
     from app.gui.desktop.pypass_gui import main as gui_main
+    from database.connect import create_table
 else:
     from pypass.app.cli.pypass_cli import main as cli_main
     from pypass.app.gui.web.pypass_web import main as web_main
     from pypass.app.gui.desktop.pypass_gui import main as gui_main
+    from pypass.database.connect import create_table
 
 def create_file_if_not_exists(file_path):
     # Create the file if it doesn't exist
@@ -49,6 +51,7 @@ def main():
 
         create_file_if_not_exists(passwords_md_path)
         create_file_if_not_exists(passwords_db_path)
+        create_table()
     else:
         # Ensure the package passwords directory exists
         if not os.path.exists(package_base_path):
@@ -57,6 +60,7 @@ def main():
 
         create_file_if_not_exists(package_passwords_md_path)
         create_file_if_not_exists(package_passwords_db_path)
+        create_table()
 
     # Command-line argument handling
     if len(sys.argv) < 2:
