@@ -12,6 +12,15 @@
 
 </p>
 
+### Contents
+
+[Features](#features) |
+[Installation](#installation) |
+[Build from scratch](#option-2-build-from-source) |
+[Usage](#usage) |
+[Development](#development) |
+[Contributing](#contributing)
+
 </div>
 
 ## Features
@@ -30,7 +39,7 @@ To install `pypass-tool` directly from PyPI:
 pip install pypass-tool
 ```
 
-### Option 2: For the Nerds Who Want to Build It on Their Own
+### Option 2: Build from Source
 
 You can also clone the repository and build the package yourself.
 
