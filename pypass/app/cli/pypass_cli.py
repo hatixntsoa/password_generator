@@ -20,7 +20,7 @@ reset = "\033[0m"
 bold = "\033[1m"
 
 # Hardcoded version when run standalone
-__version__ = "0.2.6"
+__version__ = "0.2.7"
 
 
 class PasswordGenerator:
@@ -28,18 +28,18 @@ class PasswordGenerator:
 
     def __init__(self) -> None:
         """Initialize PasswordManager."""
-        self.file_path = self._get_passwords_file_path()
+        self.file_path = self.__get_passwords_file_path()
         self.db_manager = PasswordDatabase()
         self.password_length = 12
         self.exclude_set = set()
 
-    def _get_passwords_file_path(self) -> str:
+    def __get_passwords_file_path(self) -> str:
         """Get the path to the markdown file where passwords are stored."""
         current_dir = dir(abs(__file__))
         return jn(current_dir, "..", "..", "passwords", "passwords.md")
 
     @staticmethod
-    def get_version() -> str:
+    def __get_version() -> str:
         """Get the installed package version or return the hardcoded version."""
         try:
             return version('pypass-tool')
@@ -55,13 +55,6 @@ class PasswordGenerator:
         if exclude:
             self.exclude_set = set(exclude)
 
-    def generate_password(self) -> str:
-        """Generate a random password with the specified length and excluded characters."""
-        alphabet = string.ascii_letters + string.digits + string.punctuation
-        if self.exclude_set:
-            alphabet = ''.join(char for char in alphabet if char not in self.exclude_set)
-        return ''.join(secrets.choice(alphabet) for _ in range(self.password_length))
-
     @staticmethod
     def evaluate_strength(password: str) -> str:
         """Evaluate password strength based on length."""
@@ -73,14 +66,21 @@ class PasswordGenerator:
             return "Moderate"
         else:
             return "Strong"
+        
+    def generate_password(self) -> str:
+        """Generate a random password with the specified length and excluded characters."""
+        alphabet = string.ascii_letters + string.digits + string.punctuation
+        if self.exclude_set:
+            alphabet = ''.join(char for char in alphabet if char not in self.exclude_set)
+        return ''.join(secrets.choice(alphabet) for _ in range(self.password_length))
 
     @staticmethod
-    def input_with_default(prompt: str, default_value: str) -> str:
+    def __input_with_default(prompt: str, default_value: str) -> str:
         """Prompt the user for input, return default value if input is empty."""
         value = input(prompt).strip()
         return value if value else default_value
 
-    def save_password_to_file(self, password: str, name: str, author: str, description: str, strength: str) -> None:
+    def __save_password_to_file(self, password: str, name: str, author: str, description: str, strength: str) -> None:
         """Save the generated password in a markdown file."""
         os.makedirs(dir(self.file_path), exist_ok=True)
 
@@ -100,7 +100,7 @@ class PasswordGenerator:
             file.write(f"{markdown_content.replace('                ', '')}\n")
 
 
-    def show_passwords(self) -> None:
+    def __show_passwords(self) -> None:
         """Fetch and display stored passwords from the database."""
         passwords = self.db_manager.fetch_passwords()
         if not passwords:
@@ -117,24 +117,24 @@ class PasswordGenerator:
             print(f"Strength   : {strength}")
             print(f"Password   : {bold}{light_blue}{password}{reset}\n")
 
-    def prompt_save_password(self, password: str) -> None:
+    def __prompt_save_password(self, password: str) -> None:
         """Prompt user to save the password and optionally save it to a file or database."""
-        name = self.input_with_default("Password Name (skippable): ", datetime.now().strftime("Password %m-%d-%Y_%H:%M"))
-        author = self.input_with_default("Password Owner (skippable): ", "PyPass Tool")
-        description = self.input_with_default("Password Description (skippable): ", "A random password")
+        name = self.__input_with_default("Password Name (skippable): ", datetime.now().strftime("Password %m-%d-%Y_%H:%M"))
+        author = self.__input_with_default("Password Owner (skippable): ", "PyPass Tool")
+        description = self.__input_with_default("Password Description (skippable): ", "A random password")
 
         strength = self.evaluate_strength(password)
 
         save_prompt = input("\nSave in markdown? (y/n): ").strip().lower()
         if save_prompt == 'y':
-            self.save_password_to_file(password, name, author, description, strength)
+            self.__save_password_to_file(password, name, author, description, strength)
 
         save_db_prompt = input("Save in database? (y/n): ").strip().lower()
         if save_db_prompt == 'y':
             current_time = datetime.now().strftime("%m-%d-%Y %H:%M")
             self.db_manager.insert_password(name, current_time, author, description, strength, password)
 
-    def copy_to_clipboard(self, password: str) -> None:
+    def __copy_to_clipboard(self, password: str) -> None:
         """Copy the generated password to the clipboard."""
         pyperclip.copy(password)
         print("Copied to clipboard!\n")
@@ -148,12 +148,12 @@ def main() -> None:
     parser.add_argument("-l", "--length", type=int, default=12, help="Length of the password")
     parser.add_argument("-e", "--exclude", type=str, help="Characters to exclude (no spaces)")
     parser.add_argument("--show", action="store_true", help="Show stored passwords")
-    parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + manager.get_version())
+    parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + manager.__get_version())
 
     args = parser.parse_args()
 
     if args.show:
-        manager.show_passwords()
+        manager.__show_passwords()
         return
 
     # Set the password length and excluded characters
@@ -165,8 +165,8 @@ def main() -> None:
 
     copy_choice = input("\nCopy to clipboard? (y/n): ").strip().lower()
     if copy_choice == 'y':
-        manager.copy_to_clipboard(password)
-        manager.prompt_save_password(password)
+        manager.__copy_to_clipboard(password)
+        manager.__prompt_save_password(password)
 
 
 if __name__ == "__main__":

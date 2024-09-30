@@ -104,9 +104,15 @@ def main():
 
     # Generate the password with the specified settings
     password = new_pass.generate_password()
+
+    # Get the password strength
+    strength = new_pass.evaluate_strength(password)
     
     # Print the generated password
-    print(f"Generated Password: {password}")
+    print(f"Generated Password : {password}")
+
+    # print the password strength
+    print(f"Password Strength  : {strength}")
 
 if __name__ == "__main__":
     main()
