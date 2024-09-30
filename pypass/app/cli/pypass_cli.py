@@ -20,7 +20,7 @@ reset = "\033[0m"
 bold = "\033[1m"
 
 # Hardcoded version when run standalone
-__version__ = "0.2.7"
+__version__ = "0.2.8"
 
 
 class PasswordGenerator:
@@ -39,7 +39,7 @@ class PasswordGenerator:
         return jn(current_dir, "..", "..", "passwords", "passwords.md")
 
     @staticmethod
-    def __get_version() -> str:
+    def _get_version() -> str:
         """Get the installed package version or return the hardcoded version."""
         try:
             return version('pypass-tool')
@@ -100,7 +100,7 @@ class PasswordGenerator:
             file.write(f"{markdown_content.replace('                ', '')}\n")
 
 
-    def __show_passwords(self) -> None:
+    def _show_passwords(self) -> None:
         """Fetch and display stored passwords from the database."""
         passwords = self.db_manager.fetch_passwords()
         if not passwords:
@@ -148,12 +148,12 @@ def main() -> None:
     parser.add_argument("-l", "--length", type=int, default=12, help="Length of the password")
     parser.add_argument("-e", "--exclude", type=str, help="Characters to exclude (no spaces)")
     parser.add_argument("--show", action="store_true", help="Show stored passwords")
-    parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + manager.__get_version())
+    parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + manager._get_version())
 
     args = parser.parse_args()
 
     if args.show:
-        manager.__show_passwords()
+        manager._show_passwords()
         return
 
     # Set the password length and excluded characters
