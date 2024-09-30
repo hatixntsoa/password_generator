@@ -74,7 +74,7 @@ def show_passwords():
         print(f"Owner      : {owner}")
         print(f"Creation   : {creation_date}")
         print(f"Strength   : {strength}")
-        print(f"Password   : {password}\n")
+        print(f"Password   : {bold}{light_blue}{password}{reset}\n")
 
 def main():
     parser = argparse.ArgumentParser(description="Generate or manage passwords.")
