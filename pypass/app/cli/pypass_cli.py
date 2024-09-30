@@ -4,6 +4,7 @@ import argparse
 import pyperclip
 import os
 from datetime import datetime
+from importlib.metadata import version, PackageNotFoundError
 
 # import database connection
 from sys import path
@@ -16,6 +17,9 @@ from database.connect import insert_password, fetch_passwords
 light_blue = "\033[94m"
 reset = "\033[0m"
 bold = "\033[1m"
+
+# Hardcoded version when run as standalone
+__version__ = "0.2.5"
 
 def generate_password(length=12, exclude=None):
     # Define the alphabet
@@ -76,11 +80,24 @@ def show_passwords():
         print(f"Strength   : {strength}")
         print(f"Password   : {bold}{light_blue}{password}{reset}\n")
 
+def get_version():
+    try:
+        # If the package is installed, return its version
+        return version('pypass-tool')
+    except PackageNotFoundError:
+        # If not, return the hardcoded version
+        return __version__
+
 def main():
     parser = argparse.ArgumentParser(description="Generate or manage passwords.")
     parser.add_argument("-l", "--length", type=int, default=12, help="Length of the password")
     parser.add_argument("-e", "--exclude", type=str, help="Characters to exclude (no spaces)")
     parser.add_argument("--show", action="store_true", help="Show stored passwords")
+
+    # Add version argument
+    parser.add_argument('-v', '--version', action='version', 
+        version='%(prog)s ' + get_version()
+    )
 
     args = parser.parse_args()
 
