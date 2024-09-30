@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pypass-tool',
-    version='0.2.5',
+    version='0.2.6',
     description='A CLI tool for password generation',
     long_description=open('README.md').read(),
     long_description_content_type='text/markdown',
@@ -18,6 +18,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'Flask',
+        'pyperclip',
     ],
     entry_points={
         'console_scripts': [

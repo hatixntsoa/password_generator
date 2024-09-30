@@ -11,72 +11,100 @@ if is_standalone:
     from app.cli.pypass_cli import main as cli_main
     from app.gui.web.pypass_web import main as web_main
     from app.gui.desktop.pypass_gui import main as gui_main
-    from database.connect import create_table
+    from database.connect import PasswordDatabase
 else:
     from pypass.app.cli.pypass_cli import main as cli_main
     from pypass.app.gui.web.pypass_web import main as web_main
     from pypass.app.gui.desktop.pypass_gui import main as gui_main
-    from pypass.database.connect import create_table
+    from pypass.database.connect import PasswordDatabase
 
-def create_file_if_not_exists(file_path):
-    # Create the file if it doesn't exist
-    if not os.path.exists(file_path):
-        with open(file_path, 'w') as file:
-            file.write("")
 
-def main():
-    # Define the base path for the passwords directory
-    base_path = abspath(jn(dirname(__file__), 'passwords'))
-    
-    # Fallback to standalone path if package path retrieval fails
-    try:
-        package_base_path = pkg_resources.resource_filename('pypass', 'passwords')
-    except Exception:
-        package_base_path = base_path
+class PasswordFileManager:
+    """Manages the creation and verification of password-related files and directories."""
 
-    # Define the path for password files
-    passwords_md_path = jn(base_path, 'passwords.md')
-    passwords_db_path = jn(base_path, 'passwords.db')
-    
-    # Define paths for package execution
-    package_passwords_md_path = jn(package_base_path, 'passwords.md')
-    package_passwords_db_path = jn(package_base_path, 'passwords.db')
+    def __init__(self, base_path: str) -> None:
+        """Initialize PasswordFileManager with the base path for password files."""
+        self.base_path = base_path
+        self.passwords_md_path = jn(base_path, 'passwords.md')
+        self.passwords_db_path = jn(base_path, 'passwords.db')
+        self.ensure_directories()
 
-    # Check and create password files if not exist
-    if is_standalone:
-        # Ensure the passwords directory exists for standalone execution
-        if not os.path.exists(base_path):
-            os.makedirs(base_path)
-            print(f"Created directory: {base_path}")
+    def ensure_directories(self) -> None:
+        """Ensure the base directory exists."""
+        if not os.path.exists(self.base_path):
+            os.makedirs(self.base_path)
+            print(f"Created directory: {self.base_path}")
 
-        create_file_if_not_exists(passwords_md_path)
-        create_file_if_not_exists(passwords_db_path)
-        create_table()
-    else:
-        # Ensure the package passwords directory exists
-        if not os.path.exists(package_base_path):
-            os.makedirs(package_base_path)
-            print(f"Created package directory: {package_base_path}")
+    def create_file_if_not_exists(self, file_path: str) -> None:
+        """Create a file if it does not already exist."""
+        if not os.path.exists(file_path):
+            with open(file_path, 'w') as file:
+                file.write("")
 
-        create_file_if_not_exists(package_passwords_md_path)
-        create_file_if_not_exists(package_passwords_db_path)
-        create_table()
+    def setup_files(self) -> None:
+        """Check and create necessary password files."""
+        self.create_file_if_not_exists(self.passwords_md_path)
+        self.create_file_if_not_exists(self.passwords_db_path)
 
-    # Command-line argument handling
-    if len(sys.argv) < 2:
-        # no arguments, call the cli
+
+class PasswordManagerApp:
+    """Main application class for managing password operations."""
+
+    def __init__(self) -> None:
+        """Initialize the PasswordManagerApp."""
+        self.base_path = self.get_base_path()
+        self.db_manager = PasswordDatabase()
+        self.file_manager = PasswordFileManager(self.base_path)
+
+    def get_base_path(self) -> str:
+        """Determine the base path for the application."""
+        if is_standalone:
+            return abspath(jn(dirname(__file__), 'passwords'))
+        else:
+            try:
+                return pkg_resources.resource_filename('pypass', 'passwords')
+            except Exception:
+                return abspath(jn(dirname(__file__), 'passwords'))
+
+    def setup(self) -> None:
+        """Set up the application by ensuring files and tables are created."""
+        self.file_manager.setup_files()
+        self.db_manager.create_table()
+
+    def run_cli(self) -> None:
+        """Run the CLI version of the app."""
         cli_main()
-        return
 
-    command = sys.argv[1].lower()
-
-    if command == 'web':
+    def run_web(self) -> None:
+        """Run the web version of the app."""
         web_main()
-    elif command == 'gui':
+
+    def run_gui(self) -> None:
+        """Run the GUI version of the app."""
         gui_main()
-    else:
-        cli_main()
-        return
+
+    def handle_command(self) -> None:
+        """Handle the user's command-line input."""
+        if len(sys.argv) < 2:
+            self.run_cli()
+            return
+
+        command = sys.argv[1].lower()
+
+        if command == 'web':
+            self.run_web()
+        elif command == 'gui':
+            self.run_gui()
+        else:
+            self.run_cli()
+
+
+def main() -> None:
+    """Main entry point for the password manager app."""
+    app = PasswordManagerApp()
+    app.setup()
+    app.handle_command()
+
 
 if __name__ == "__main__":
     main()

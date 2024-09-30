@@ -1,4 +1,5 @@
 flask
+pyperclip
 tkinter
 sqlite3
 wheel

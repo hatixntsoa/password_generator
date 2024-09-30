@@ -18,6 +18,7 @@
 [Installation](#installation) |
 [Build from scratch](#option-2-build-from-source) |
 [Usage](#usage) |
+[Package Usage](#using-as-a-package) |
 [Development](#development) |
 [Contributing](#contributing)
 
@@ -85,6 +86,31 @@ Once the package is installed, you can use the `pypass` command with different i
   ```
 
   Open your browser and navigate to `http://127.0.0.1:5000`.
+
+### Using as a Package
+
+You can also use `pypass-tool` as a package in your own scripts. Here's an example:
+
+```python
+from pypass import PasswordGenerator
+
+def main():
+    # Create an instance of PasswordGenerator
+    new_pass = PasswordGenerator()
+    
+    # Set the desired password length and characters to exclude
+    new_pass.set_password_length(16)
+    new_pass.exclude_characters("weak12345")
+
+    # Generate the password with the specified settings
+    password = new_pass.generate_password()
+    
+    # Print the generated password
+    print(f"Generated Password: {password}")
+
+if __name__ == "__main__":
+    main()
+```
 
 ## Development
 
