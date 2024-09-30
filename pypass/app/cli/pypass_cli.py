@@ -10,7 +10,7 @@ from sys import path
 from os.path import abspath as abs, join as jn, dirname as dir
 path.append(abs(jn(dir(__file__), '..', '..')))
 
-from database.connect import insert_password
+from database.connect import insert_password, fetch_passwords
 
 # define ansi codes
 light_blue = "\033[94m"
@@ -41,16 +41,10 @@ def evaluate_strength(password):
         return "Strong"
 
 def save_password_to_file(password, name, author, description, strength):
-    # Get the directory of the currently running script
     current_dir = os.path.dirname(os.path.abspath(__file__))
-    
-    # Define the path for the passwords file relative to the current script
     file_path = os.path.join(current_dir, "..", "..", "passwords", "passwords.md")
-    
-    # Ensure the directory exists
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
     
-    # Write the password to the file
     with open(file_path, 'a') as file:
         current_time = datetime.now().strftime("%m-%d-%Y %H:%M")
         markdown_content = f"""\
@@ -64,24 +58,40 @@ def save_password_to_file(password, name, author, description, strength):
             {password}
             ```\
         """
-        
-        # Write to file without tabulations for code readability
         file.write(f"{markdown_content.replace('            ', '')}\n")
 
+def show_passwords():
+    passwords = fetch_passwords()
+    if not passwords:
+        print("No passwords found in the database.")
+        return
+    
+    print("\nStored Passwords:")
+    for pw in passwords:
+        name, creation_date, owner, description, strength, password = pw[1:]
+        print(f"\nName       : {name}")
+        print(f"Description: {description}")
+        print(f"Owner      : {owner}")
+        print(f"Creation   : {creation_date}")
+        print(f"Strength   : {strength}")
+        print(f"Password   : {password}\n")
+
 def main():
-    # Set up argument parser
-    parser = argparse.ArgumentParser(description="Generate a random password.")
+    parser = argparse.ArgumentParser(description="Generate or manage passwords.")
     parser.add_argument("-l", "--length", type=int, default=12, help="Length of the password")
     parser.add_argument("-e", "--exclude", type=str, help="Characters to exclude (no spaces)")
+    parser.add_argument("--show", action="store_true", help="Show stored passwords")
 
-    # Parse the command-line arguments
     args = parser.parse_args()
 
-    # Get the exclude characters, stripping spaces
-    exclude_characters = args.exclude if args.exclude else ""
+    if args.show:
+        # Fetch and display passwords from the database
+        show_passwords()
+        return
 
-    # Generate the password using the provided length and excluded characters
+    exclude_characters = args.exclude if args.exclude else ""
     password = generate_password(args.length, exclude_characters)
+    
     print(f"Generated random password: ")
     print(f"{bold}{light_blue}{password}{reset}")
 
@@ -105,10 +115,8 @@ def main():
                 strength = evaluate_strength(password)
                 save_password_to_file(password, name, author, description, strength)
                 
-                # ask to save to the database
                 save_database_prompt = input("\nSave in database ? (y/n): ").strip().lower()
                 if save_database_prompt == 'y':
-                    # Save to the database
                     current_time = datetime.now().strftime("%m-%d-%Y %H:%M")
                     insert_password(name, current_time, author, description, strength, password)
             break
