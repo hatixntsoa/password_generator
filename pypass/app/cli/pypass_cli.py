@@ -20,7 +20,7 @@ reset = "\033[0m"
 bold = "\033[1m"
 
 # Hardcoded version when run standalone
-__version__ = "0.2.8"
+__version__ = "0.2.9"
 
 
 class PasswordGenerator:
@@ -117,7 +117,7 @@ class PasswordGenerator:
             print(f"Strength   : {strength}")
             print(f"Password   : {bold}{light_blue}{password}{reset}\n")
 
-    def __prompt_save_password(self, password: str) -> None:
+    def _prompt_save_password(self, password: str) -> None:
         """Prompt user to save the password and optionally save it to a file or database."""
         name = self.__input_with_default("Password Name (skippable): ", datetime.now().strftime("Password %m-%d-%Y_%H:%M"))
         author = self.__input_with_default("Password Owner (skippable): ", "PyPass Tool")
@@ -134,7 +134,7 @@ class PasswordGenerator:
             current_time = datetime.now().strftime("%m-%d-%Y %H:%M")
             self.db_manager.insert_password(name, current_time, author, description, strength, password)
 
-    def __copy_to_clipboard(self, password: str) -> None:
+    def _copy_to_clipboard(self, password: str) -> None:
         """Copy the generated password to the clipboard."""
         pyperclip.copy(password)
         print("Copied to clipboard!\n")
@@ -165,8 +165,8 @@ def main() -> None:
 
     copy_choice = input("\nCopy to clipboard? (y/n): ").strip().lower()
     if copy_choice == 'y':
-        manager.__copy_to_clipboard(password)
-        manager.__prompt_save_password(password)
+        manager._copy_to_clipboard(password)
+        manager._prompt_save_password(password)
 
 
 if __name__ == "__main__":
