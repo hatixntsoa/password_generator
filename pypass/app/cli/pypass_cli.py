@@ -38,12 +38,13 @@ class PasswordGenerator:
         :param: None
         :return: None
         """
-        self.file_path = self.__get_passwords_file_path()
-        self.db_manager = PasswordDatabase()
-        self.password_length = 12
-        self.exclude_set = set()
+        self.file_path: str = self.__get_passwords_file_path()
+        self.db_manager: PasswordDatabase = PasswordDatabase()
+        self.password_length: int = 12
+        self.exclude_set: set = set()
 
-    def __get_passwords_file_path(self) -> str:
+    @staticmethod
+    def __get_passwords_file_path() -> str:
         """
         Determines and returns the file path where passwords are stored in a markdown file.
 
@@ -54,7 +55,7 @@ class PasswordGenerator:
         :param: None
         :return: Returns the absolute path to the passwords markdown file as a string.
         """
-        current_dir = dir(abs(__file__))
+        current_dir: str = dir(abs(__file__))
         return jn(current_dir, "..", "..", "passwords", "passwords.md")
 
     @staticmethod
@@ -130,7 +131,7 @@ class PasswordGenerator:
         """
         alphabet = string.ascii_letters + string.digits + string.punctuation
         if self.exclude_set:
-            alphabet = ''.join(char for char in alphabet if char not in self.exclude_set)
+            alphabet: str = ''.join(char for char in alphabet if char not in self.exclude_set)
         return ''.join(secrets.choice(alphabet) for _ in range(self.password_length))
 
     @staticmethod
@@ -145,7 +146,7 @@ class PasswordGenerator:
         :param default_value: The default value to return if the user provides no input.
         :return: The user input or the default value.
         """
-        value = input(prompt).strip()
+        value: str = input(prompt).strip()
         return value if value else default_value
 
     def __save_password_to_file(self, password: str, name: str, author: str, description: str, strength: str) -> None:
@@ -164,8 +165,8 @@ class PasswordGenerator:
         os.makedirs(dir(self.file_path), exist_ok=True)
 
         with open(self.file_path, 'a') as file:
-            current_time = datetime.now().strftime("%m-%d-%Y %H:%M")
-            markdown_content = f"""\
+            current_time: str = datetime.now().strftime("%m-%d-%Y %H:%M")
+            markdown_content: str = f"""\
 
                 - ### ``{name}``   
                 **Date of Creation**: {current_time}  
@@ -179,7 +180,7 @@ class PasswordGenerator:
             """
             file.write(f"{markdown_content.replace('                ', '')}\n")
 
-    def _show_passwords(self) -> None:
+    def show_passwords(self) -> None:
         """
         Fetches and displays stored passwords from the database.
 
@@ -187,7 +188,7 @@ class PasswordGenerator:
         formatted manner, showing details such as the password name, description, owner, 
         creation date, strength, and the actual password.
         """
-        passwords = self.db_manager.fetch_passwords()
+        passwords: list = self.db_manager.fetch_passwords()
         if not passwords:
             print("No passwords found in the database.")
             return
@@ -202,7 +203,7 @@ class PasswordGenerator:
             print(f"Strength   : {strength}")
             print(f"Password   : {bold}{light_blue}{password}{reset}\n")
 
-    def _prompt_save_password(self, password: str) -> None:
+    def prompt_save_password(self, password: str) -> None:
         """
         Prompts the user to save the generated password and store it in a file or database.
 
@@ -212,22 +213,24 @@ class PasswordGenerator:
 
         :param password: The password string to save.
         """
-        name = self.__input_with_default("Password Name (skippable): ", datetime.now().strftime("Password %m-%d-%Y_%H:%M"))
-        author = self.__input_with_default("Password Owner (skippable): ", "PyPass Tool")
-        description = self.__input_with_default("Password Description (skippable): ", "A random password")
+        name: str = self.__input_with_default("Password Name (skippable): ", datetime.now().strftime("Password "
+                                                                                                "%m-%d-%Y_%H:%M"))
+        author: str = self.__input_with_default("Password Owner (skippable): ", "PyPass Tool")
+        description: str = self.__input_with_default("Password Description (skippable): ", "A random password")
 
-        strength = self.evaluate_strength(password)
+        strength: str = self.evaluate_strength(password)
 
-        save_prompt = input("\nSave in markdown? (y/n): ").strip().lower()
+        save_prompt: str = input("\nSave in markdown? (y/n): ").strip().lower()
         if save_prompt == 'y':
             self.__save_password_to_file(password, name, author, description, strength)
 
-        save_db_prompt = input("Save in database? (y/n): ").strip().lower()
+        save_db_prompt: str = input("Save in database? (y/n): ").strip().lower()
         if save_db_prompt == 'y':
-            current_time = datetime.now().strftime("%m-%d-%Y %H:%M")
+            current_time: str = datetime.now().strftime("%m-%d-%Y %H:%M")
             self.db_manager.insert_password(name, current_time, author, description, strength, password)
 
-    def _copy_to_clipboard(self, password: str) -> None:
+    @staticmethod
+    def copy_to_clipboard(password: str) -> None:
         """
         Copies the generated password to the clipboard.
 
@@ -256,23 +259,23 @@ def main() -> None:
     parser.add_argument("--show", action="store_true", help="Show stored passwords")
     parser.add_argument('-v', '--version', action='version', version='%(prog)s ' + manager._get_version())
 
-    args = parser.parse_args()
+    args: argparse.Namespace = parser.parse_args()
 
     if args.show:
-        manager._show_passwords()
+        manager.show_passwords()
         return
 
     # Set the password length and excluded characters
     manager.set_password_length(args.length)
     manager.exclude_characters(args.exclude)
-    password = manager.generate_password()
+    password: str = manager.generate_password()
 
     print(f"Generated random password: {bold}{light_blue}{password}{reset}")
 
-    copy_choice = input("\nCopy to clipboard? (y/n): ").strip().lower()
+    copy_choice: str = input("\nCopy to clipboard? (y/n): ").strip().lower()
     if copy_choice == 'y':
-        manager._copy_to_clipboard(password)
-        manager._prompt_save_password(password)
+        manager.copy_to_clipboard(password)
+        manager.prompt_save_password(password)
 
 
 if __name__ == "__main__":
