@@ -20,7 +20,7 @@ reset = "\033[0m"
 bold = "\033[1m"
 
 # Hardcoded version when run standalone
-__version__ = "0.3.0"
+__version__ = "0.3.1"
 
 
 class PasswordGenerator:
