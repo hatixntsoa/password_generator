@@ -1,26 +1,26 @@
 # PyPass Tool
 
-<p align="center">
+<p style="text-align: center;">
  <img height="150" src="https://raw.githubusercontent.com/h471x/password_generator/master/imgs/pypass.png"/>
 </p>
 
-<div align="center">
+<div style="text-align: center;">
 
-<p>
+  <p>
 
-``pypass-tool`` is a Python-based password management utility that allows users to generate random passwords and store them inside a file for easy recall. It will check for password strength and provide options to adjust the length of the password and exclude specific characters. Users can choose to generate passwords using the command line (CLI), a web browser, or a desktop app.
+  ``pypass-tool`` is a Python-based password management utility that allows users to generate random passwords and store them inside a file for easy recall. It will check for password strength and provide options to adjust the length of the password and exclude specific characters. Users can choose to generate passwords using the command line (CLI), a web browser, or a desktop app.
 
-</p>
+  </p>
 
-### Contents
+  ### Contents
 
-[Features](#features) |
-[Installation](#installation) |
-[Build from scratch](#option-2-build-from-source) |
-[Usage](#usage) |
-[Package Usage](#using-as-a-package) |
-[Development](#development) |
-[Contributing](#contributing)
+  [Features](#features) |
+  [Installation](#installation) |
+  [Build from scratch](#option-2-build-from-source) |
+  [Usage](#usage) |
+  [Package Usage](#using-as-a-package) |
+  [Development](#development) |
+  [Contributing](#contributing)
 
 </div>
 
