@@ -23,6 +23,7 @@
 [Contributing](#contributing)
 
 </div>
+
 ## Features
 
 - **Command-Line Interface (CLI)**: Default interface for generating and managing passwords from the terminal.
