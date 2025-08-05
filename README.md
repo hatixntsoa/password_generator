@@ -1,7 +1,7 @@
 # PyPass Tool
 
 <p align="center">
- <img height="150" src="https://raw.githubusercontent.com/h471x/password_generator/master/imgs/pypass.png"/>
+ <img height="150" src="https://raw.githubusercontent.com/hatixntsoa/password_generator/master/imgs/pypass.png"/>
 </p>
 
 <div align="center">
@@ -47,7 +47,7 @@ You can also clone the repository and build the package yourself.
 1. Clone the repository and navigate to the project directory:
 
   ```bash
-  git clone https://github.com/h471x/password_generator.git
+  git clone https://github.com/hatixntsoa/password_generator.git
   cd password_generator
   ```
 
